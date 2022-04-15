@@ -32,3 +32,10 @@
     become: true
     roles:
       - Web_Sunuculari
+
+   # Bu rol veritabani_sunucusu grubundaki hostlar için kullanılmaktadır.
+
+  - hosts: veritabani_sunucusu
+    become: true
+    roles:
+      - Veritabani_Sunucusu

@@ -56,12 +56,15 @@
       owner: root
       group: root
       mode: 0644
-    register: conf
+    notify: conf_changed
 
   # Aşağıdaki taskı çalıştırmamızın nedeni apache konf dosyalrında bir değişiklik yapılması
   # ve dolayısıyla değişikliklerin geçerli olabilmesi için apache servisini restartt etmemiz 
   # gerekliliğidir. Bu sebepten ötürü önceki taskın çıktısındaki değişkeni kullanarak koşul 
   # ifadesi ekliyoruz.
+
+  # Son Versiyonda handler yapısı kullandığımız için bu görev çalışmayacaktır. Bu görev yerine 
+  # bir üst klasördeki handlers/main.yml 'de aynı işi yapan handler çalışacaktır.
 
   - name: Bu görev, web Sunucularının Apche Servislerini Restart Eder.
     service:

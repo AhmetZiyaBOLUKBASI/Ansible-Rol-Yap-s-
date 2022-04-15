@@ -17,3 +17,11 @@
           update_only: yes # update_only: yes ifadesi ile paketlerin dependencylerini de güncelleriz.
           update_cache: yes
         when: ansible_distribution == "Rocky" # işletim sistemi parametrelerinden dolayı koşul ifadesi kullanılmıştır.
+
+  # Bu rol Ansible_Controller grubundaki hostlar için kullanılmaktadır.
+
+  - hosts: Ansible_Controller
+    become: true
+    connection: local
+    roles:
+      - Ansible_Controller

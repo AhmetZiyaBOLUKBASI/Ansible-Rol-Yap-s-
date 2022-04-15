@@ -1,0 +1,79 @@
+---
+  # Aşağıdaki task debug amaçlıdır.
+
+  - name: işletim sistemlerini tespit et.
+    debug: var=ansible_distribution
+
+
+  # first_found bir lookup pluginidir. Detaylı bilgi için şu komutu çalıştırın;
+  # ansible-doc -t lookup first_found
+
+  - name: Dosyalardan değişkenleri oku.
+    include_vars: "{{ lookup('first_found', params)}}"
+    vars:
+      params:
+        files:
+          - "roles/vars/apache_{{ ansible_distribution }}.yml"
+          - "roles/vars/apache_varsayilan.yml"
+
+  - name: Bu gorev, Tum sunucularda web sunucu & PHP kutuphane kurulumu yapar.
+    ansible.builtin.package: 
+      name:
+        - "{{ web_sunucu }}"
+        - "{{ php_kutuphanesi }}"
+      state: latest
+
+  - name: Bu görev, Rocky Linux Apache Servisini Çalıştırır.
+    service:
+      name: "{{ web_servis }}"
+      state: started
+      enabled: yes
+    when: ansible_distribution == "Rocky"
+
+  - name: Bu görev, Rocky Linux'un http Portunu Açar.
+    firewalld:
+      port: 80/tcp
+      permanent: yes
+      state: enabled
+    when: ansible_distribution == "Rocky"
+    register: rockyfrwll
+
+  # Yukarıda yeni bir firewall kuralı ekledik. Firewall konfigürasyonu değiştiği için
+  # firewall servisini restart edeceğiz.
+
+  - name: Bu görev, Rocky Linux'un Firewall Servisini Restart Eder.
+    systemd:
+      name: firewalld
+      state: reloaded
+    when: ansible_distribution == "Rocky" and rockyfrwll.changed
+    # yukarıdaki koşul ifadesine bir önceki taskta eklediğimiz rockyfrwll değişkeninin 
+    # changed olması durumunu ekledik.
+
+  - name: Bu görev, web sunucularına konf dosyalarını kopyalama işlemini yapar.
+    copy:
+      src: "{{ yerelkonf }}"
+      dest: "{{ hedefkonf }}"
+      owner: root
+      group: root
+      mode: 0644
+    register: conf
+
+  # Aşağıdaki taskı çalıştırmamızın nedeni apache konf dosyalrında bir değişiklik yapılması
+  # ve dolayısıyla değişikliklerin geçerli olabilmesi için apache servisini restartt etmemiz 
+  # gerekliliğidir. Bu sebepten ötürü önceki taskın çıktısındaki değişkeni kullanarak koşul 
+  # ifadesi ekliyoruz.
+
+  - name: Bu görev, web Sunucularının Apche Servislerini Restart Eder.
+    service:
+      name: "{{ web_servis }}"
+      state: started
+      enabled: yes
+    when: conf.changed
+
+  - name: Bu görev, web sunucularına varsayılan html sayfasını kopyalama işlemini yapar.
+    copy:
+      src: "{{ projeklasor }}"
+      dest: "{{ hedefklasor }}"
+      owner: root
+      group: root
+      mode: 0644

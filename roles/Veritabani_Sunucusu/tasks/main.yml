@@ -1,0 +1,23 @@
+---
+  # Aşağıdaki task debug amaçlıdır.
+
+  - name: işletim sistemlerini tespit et.
+    debug: var=ansible_distribution
+
+
+  # first_found bir lookup pluginidir. Detaylı bilgi için şu komutu çalıştırın;
+  # ansible-doc -t lookup first_found
+
+  - name: Dosyalardan değişkenleri oku.
+    include_vars: "{{ lookup('first_found', params)}}"
+    vars:
+      params:
+        files:
+          - "roles/vars/apache_{{ ansible_distribution }}.yml"
+          - "roles/vars/apache_varsayilan.yml"
+
+  - name: Bu gorev, Veritabanı sunucusuna MariaDB kurulumu yapar.
+    ansible.builtin.package: 
+      name:
+        - "{{ db_sunucusu }}"
+      state: latest

@@ -1,0 +1,6 @@
+---
+  - name: conf_changed
+    service:
+      name: "{{ web_servis }}"
+      state: started
+      enabled: yes

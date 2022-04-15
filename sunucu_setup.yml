@@ -25,3 +25,10 @@
     connection: local
     roles:
       - Ansible_Controller
+
+  # Bu rol web_sunuculari grubundaki hostlar için kullanılmaktadır.
+
+  - hosts: web_sunuculari
+    become: true
+    roles:
+      - Web_Sunuculari

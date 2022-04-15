@@ -1,0 +1,3 @@
+# Bu değişkenleri github repodan kaynak kodları download eden task kullanır.
+repoadres: 'https://github.com/techakademi/Yenisite.git'
+repoklasor: /home/theadmin/Prod_Proje

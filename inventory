@@ -1,0 +1,12 @@
+[Ansible_Controller]
+192.168.1.53
+
+[web_sunuculari]
+192.168.1.54 
+192.168.1.57  
+
+[veritabani_sunucusu]
+192.168.1.55
+
+[ftp_sunucusu]
+192.168.1.56

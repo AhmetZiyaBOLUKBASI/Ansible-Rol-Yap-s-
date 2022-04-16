@@ -1,0 +1,72 @@
+---
+  # Bu playbook ansible.cfg dosyasına remote_user = AnsibleUser ifadesi girildiği için hata alacaktır.
+  # deneme amaçlı hazırlanmıştır.
+  
+  - hosts: Ansible_Controller
+    become: true
+    connection: local
+    tasks:
+
+      - name: Dosyalardan değişkenleri oku.
+        include_vars: "{{ lookup('first_found', params)}}"
+        vars:
+          params:
+            files:
+              - "roles/vars/apache_{{ ansible_distribution }}.yml"
+              - "roles/vars/apache_varsayilan.yml"
+
+      # Bu task, sunucu işlemlerini yerine getirecek kullanıcıyı tanımlama görevidir.
+
+      - name: Bu görev, kullanıcı oluşturma işlemini gerçekleştirir.
+        user:
+          name: AnsibleUser
+          groups: root
+
+      # Bu task, AnsibleUser kullanıcısı için authorized ssh key atamak içindir.
+
+      - name: Bu görev, kullanıcı oluşturma işlemini gerçekleştirir.
+        authorized_key:
+          user: AnsibleUser
+          key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF4aGVIYdCPcZc+JZ8T/BJAH1f3lohf6c9tX7q8dI7P2 Ansible Baglanti Anahtari"
+
+      - name: Bu görev, sudoer dosyasını kopyalama işlemini yapar.
+        copy:
+          src: "{{ yerelsudoer }}"
+          dest: "{{ hedefsudoer }}"
+          owner: root
+          group: root
+          mode: 0440
+
+  - hosts: all:!Ansible_Controller
+    become: true
+    tasks:
+
+      - name: Dosyalardan değişkenleri oku.
+        include_vars: "{{ lookup('first_found', params)}}"
+        vars:
+          params:
+            files:
+              - "roles/vars/apache_{{ ansible_distribution }}.yml"
+              - "roles/vars/apache_varsayilan.yml"
+
+      # Bu task, sunucu işlemlerini yerine getirecek kullanıcıyı tanımlama görevidir.
+
+      - name: Bu görev, kullanıcı oluşturma işlemini gerçekleştirir.
+        user:
+          name: AnsibleUser
+          groups: root
+
+      # Bu task, AnsibleUser kullanıcısı için authorized ssh key atamak içindir.
+
+      - name: Bu görev, kullanıcı oluşturma işlemini gerçekleştirir.
+        authorized_key:
+          user: AnsibleUser
+          key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF4aGVIYdCPcZc+JZ8T/BJAH1f3lohf6c9tX7q8dI7P2 Ansible Baglanti Anahtari"
+
+      - name: Bu görev, sudoer dosyasını kopyalama işlemini yapar.
+        copy:
+          src: "{{ yerelsudoer }}"
+          dest: "{{ hedefsudoer }}"
+          owner: root
+          group: root
+          mode: 0440

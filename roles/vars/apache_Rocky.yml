@@ -6,3 +6,5 @@
   yerelkonf: /home/theadmin/AnsibleOtomasyon/confbelgeler/httpd.conf
   hedefkonf: /etc/httpd/conf/httpd.conf
   web_servis: httpd
+  yerelsudoer: /home/theadmin/AnsibleRolDosya/roles/files/sudoer_AnsibleUser
+  hedefsudoer: /etc/sudoers.d/AnsibleUser

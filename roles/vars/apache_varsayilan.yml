@@ -8,3 +8,5 @@
   yerelkonf: /home/theadmin/AnsibleOtomasyon/confbelgeler/dir.conf
   hedefkonf: /etc/apache2/mods-enabled/dir.conf
   web_servis: apache2
+  yerelsudoer: /home/theadmin/AnsibleRolDosya/roles/files/sudoer_AnsibleUser
+  hedefsudoer: /etc/sudoers.d/AnsibleUser
